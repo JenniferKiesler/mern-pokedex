@@ -10,7 +10,7 @@ const Search = () => {
   const [searchTerm, setSearchTerm] = useState('seel')
 
   useEffect(() => { 
-
+    getPokemon()
   }, [])
 
   const getPokemon = () => {
@@ -23,7 +23,7 @@ const Search = () => {
     .finally(() => setLoading(false))
   }
   
-  const renderUi = () => {
+  const renderUI = () => {
     if (loading) {
       return <Spinner />
     } else if (error) {
@@ -36,11 +36,34 @@ const Search = () => {
       return null
     }
   }
+
+  const handleInputChange = (e) => {
+    setSearchTerm(e.target.value)
+  }
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault()
+    if (!searchTerm) {
+      return
+    }
+    getPokemon()
+  }
   
+  const reset = () => {
+    setSearchTerm('')
+    setError(null)
+    setPokemon(null)
+  }
+
   return (
     <>
       { renderUI() }
-      <SearchForm />
+      <SearchForm 
+        searchTerm={searchTerm}
+        handleInputChange={handleInputChange}
+        handleFormSubmit={handleFormSubmit}
+        reset={reset}
+      />
     </>
   )
 }
