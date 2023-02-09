@@ -1,4 +1,7 @@
 import { MdSave } from 'react-icons/md'
+import { useMutation } from '@apollo/client'
+import { ADD_POKEMON } from '../utils/mutations'
+import { GET_TRAINER } from '../utils/queries'
 import Container from './container'
 import Auth from '../utils/auth'
 
@@ -14,6 +17,27 @@ const PokemonDetails = (props) => {
     sprites
   } = props.pokemon
 
+  const [addPokemon] = useMutation(ADD_POKEMON, {
+    refetchQueries: [
+      { query: GET_TRAINER },
+      'trainer'
+    ]
+  })
+
+  const savePokemon = async () => {
+    await addPokemon({
+      variables: {
+        pokemonId: id,
+        name,
+        base_experience,
+        height,
+        weight,
+        image: sprites.other['official-artwork'].front_default,
+        moves: moves.map(moveData => moveData.move.name)
+      }
+    })
+  }
+
   return (
     <Container className="results">
       <div style={{
@@ -21,6 +45,11 @@ const PokemonDetails = (props) => {
         justifyContent: 'space-between'
       }}>
         <h3>ID: {id}</h3>
+        {Auth.loggedIn() && (
+          <button onClick={savePokemon}>
+            <MdSave size={25} />
+          </button>
+        )}
       </div>
       <img 
         src={sprites.other['official-artwork'].front_default}
