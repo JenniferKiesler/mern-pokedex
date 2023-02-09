@@ -1,5 +1,3 @@
-const Spinner = () => {
-  return 'Spinner'
-}
+const Spinner = () => <div className="spinner" />
 
 export default Spinner
