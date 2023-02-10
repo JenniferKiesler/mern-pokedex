@@ -17,16 +17,19 @@ const PokemonDetails = (props) => {
     sprites
   } = props.pokemon
 
+  const currentUser = Auth.getLoggedInUser()
+
   const [addPokemon] = useMutation(ADD_POKEMON, {
     refetchQueries: [
       { query: GET_TRAINER },
-      'trainer'
+      'GET_TRAINER'
     ]
   })
 
   const savePokemon = async () => {
     await addPokemon({
       variables: {
+        trainerId: currentUser._id,
         pokemonId: id,
         name,
         base_experience,
@@ -36,6 +39,7 @@ const PokemonDetails = (props) => {
         moves: moves.map(moveData => moveData.move.name)
       }
     })
+    alert(`${name} saved!`)
   }
 
   return (
